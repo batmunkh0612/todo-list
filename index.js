@@ -37,7 +37,7 @@ const createBoard = (title, countValue, color) => {
   circle.classList.add(color);
   count.innerText = countValue;
   headerText.innerText = title;
-  list.className = 'list';
+  list.className = "list";
 
   headerTitle.appendChild(circle);
   headerTitle.appendChild(headerText);
@@ -48,10 +48,8 @@ const createBoard = (title, countValue, color) => {
   body.appendChild(board);
 };
 
-createBoard('todo test', 11, 'blue');
-
-const createTask = (desc) => {
-  const list = document.getElementsByClassName("list")[0];
+const createTask = (desc, index) => {
+  const list = document.getElementsByClassName("list")[index];
   const task = document.createElement("div");
   const circle = document.createElement("div");
   const text = document.createElement("p");
@@ -59,10 +57,11 @@ const createTask = (desc) => {
   const remove = document.createElement("div");
 
   task.className = "task";
-  circle.classList.add('circle');
-  circle.classList.add('black');
-  text.className = 'text';
+  circle.classList.add("circle");
+  circle.classList.add("black");
+  text.className = "text";
   text.innerText = desc;
+
   edit.innerHTML = editSvg;
   remove.innerHTML = removeSvg;
 
@@ -73,6 +72,69 @@ const createTask = (desc) => {
   list.appendChild(task);
 };
 
-createTask('hello world1');
-createTask('hello world2');
-createTask('hello world2');
+const board = [
+  {
+    title: "Todo",
+    bgColor: "white",
+  },
+
+  {
+    title: "In progress",
+    bgColor: "blue",
+  },
+
+  {
+    title: "Blocked",
+    bgColor: "red",
+  },
+  {
+    title: "Done",
+    bgColor: "yellow",
+  },
+];
+
+const data = {
+  todo: [
+    {
+      description: "todo title",
+    },
+    {
+      description: "todo title",
+    },
+    {
+      description: "todo title",
+    },
+  ],
+  
+  inProgress: [
+    {
+      description: "in progress",
+    },
+    {
+      description: "todo title",
+    },
+    {
+      description: "todo title",
+    },
+  ],
+
+  blocked: [
+    {
+      description: "blocked",
+    },
+  ],
+
+  done: [
+    {
+      description: "done",
+    },
+  ],
+};
+
+board.map((el) => {
+  createBoard(el.title, 5, el.bgColor);
+});
+
+const keys = Object.keys(data);
+
+keys.map((el, index) => data[el].map((task) => createTask(task.description, index)))

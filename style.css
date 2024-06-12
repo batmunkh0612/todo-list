@@ -5,9 +5,12 @@
 body {
   background: #1A1A1A;
   display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
   width: 100%;
   padding: 120px 50px;
+  gap: 24px;
 }
 
 .board {
@@ -60,7 +63,16 @@ body {
 
 .black {
   border: 1px solid white;
-  background: #000;
+  background: #000 !important;
+}
+
+.red {
+  background: red !important;
+}
+
+.yellow {
+  background: yellow !important;
+
 }
 
 .blue {
