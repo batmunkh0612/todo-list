@@ -20,24 +20,27 @@ const removeSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16
 <path d="M9.33334 7.33333V11.3333" stroke="#A30000" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`;
 
+const createElement = (tag, classList, innerText = "") => {
+  const element = document.createElement(tag);
+
+  classList.forEach((className) => {
+    element.classList.add(className)
+  });
+
+  element.innerText = innerText;
+
+  return element;
+}
+
 const createBoard = (title, countValue, color) => {
   // create element
-  const board = document.createElement("div");
-  const header = document.createElement("div");
-  const list = document.createElement("div");
-  const headerTitle = document.createElement("div");
-  const circle = document.createElement("div");
-  const headerText = document.createElement("p");
-  const count = document.createElement("div");
-
-  board.className = "board";
-  header.className = "header";
-  headerTitle.className = "header-title";
-  circle.classList.add("circle");
-  circle.classList.add(color);
-  count.innerText = countValue;
-  headerText.innerText = title;
-  list.className = "list";
+  const board = createElement('div',['board']);
+  const header = createElement('div',['header'])
+  const list = createElement('div',['list'])
+  const headerTitle = createElement('div',['header-title']);
+  const circle = createElement('div', ['circle', color])
+  const headerText = createElement('p',[],title);
+  const count = createElement('div',[],countValue)
 
   headerTitle.appendChild(circle);
   headerTitle.appendChild(headerText);
@@ -72,7 +75,7 @@ const createTask = (desc, index) => {
   list.appendChild(task);
 };
 
-const board = [
+const boards = [
   {
     title: "Todo",
     bgColor: "white",
@@ -93,6 +96,8 @@ const board = [
   },
 ];
 
+boards.forEach((board) => createBoard(board.title,5, board.bgColor,));
+
 const data = {
   todo: [
     {
@@ -105,7 +110,7 @@ const data = {
       description: "todo title",
     },
   ],
-  
+
   inProgress: [
     {
       description: "in progress",
@@ -131,10 +136,4 @@ const data = {
   ],
 };
 
-board.map((el) => {
-  createBoard(el.title, 5, el.bgColor);
-});
 
-const keys = Object.keys(data);
-
-keys.map((el, index) => data[el].map((task) => createTask(task.description, index)))
