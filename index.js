@@ -1,4 +1,4 @@
-const body = document.getElementsByTagName("body")[0];
+const body = document.querySelector("body");
 
 const svgs = {
   editSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -22,20 +22,14 @@ const svgs = {
 </svg>`,
 };
 
-const createElement = (tag, classList, innerTextOrHtml = "",) => {
+const createElement = (tag, classList, innerTextOrHtml = "") => {
   const element = document.createElement(tag);
-
-  classList.forEach((className) => {
-    element.classList.add(className);
-  });
-
+  classList.forEach((className) => element.classList.add(className));
   element.innerHTML = innerTextOrHtml;
-
   return element;
 };
 
 const createBoard = (title, countValue, color) => {
-  // create element
   const board = createElement("div", ["board"]);
   const header = createElement("div", ["header"]);
   const list = createElement("div", ["list"]);
@@ -54,13 +48,16 @@ const createBoard = (title, countValue, color) => {
 };
 
 const createTask = (desc, index) => {
-  console.log(desc, index);
   const list = document.getElementsByClassName("list")[index];
-  const task = createElement('div',['task']);
-  const circle = createElement('div', ['circle', 'black']);
-  const text = createElement('p',['text'],desc);
-  const edit = createElement('div',[],svgs.editSvg);
-  const remove = createElement('div',[],svgs.removeSvg);
+  const task = createElement("div", ["task"]);
+  const circle = createElement("div", ["circle", "black"]);
+  const text = createElement("p", ["text"], desc);
+  const edit = createElement("div", ["edit"], svgs.editSvg);
+  const remove = createElement("div", ["remove"], svgs.removeSvg);
+
+  // Add event listeners for edit and remove actions
+  edit.addEventListener("click", () => editTask(task, text));
+  remove.addEventListener("click", () => removeTask(task));
 
   task.appendChild(circle);
   task.appendChild(text);
@@ -69,65 +66,63 @@ const createTask = (desc, index) => {
   list.appendChild(task);
 };
 
+const editTask = (task, text) => {
+  const input = document.createElement("input");
+  input.type = "text";
+  input.value = text.textContent;
+  task.replaceChild(input, text);
+
+  input.addEventListener("blur", () => {
+    text.textContent = input.value;
+    task.replaceChild(text, input);
+  });
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      input.blur();
+    }
+  });
+
+  input.focus();
+};
+
+const removeTask = (task) => {
+  task.remove();
+};
+
+const addTask = (description, boardIndex = 0) => {
+  createTask(description, boardIndex);
+};
+
 const boards = [
-  {
-    title: "Todo",
-    bgColor: "white",
-  },
-
-  {
-    title: "In progress",
-    bgColor: "blue",
-  },
-
-  {
-    title: "Blocked",
-    bgColor: "red",
-  },
-  {
-    title: "Done",
-    bgColor: "yellow",
-  },
+  { title: "Todo", bgColor: "white" },
+  { title: "In progress", bgColor: "blue" },
+  { title: "Blocked", bgColor: "red" },
+  { title: "Done", bgColor: "yellow" },
 ];
 
 boards.forEach((board) => createBoard(board.title, 5, board.bgColor));
 
 const data = {
-  todo: [
-    {
-      description: "todo title",
-    },
-    {
-      description: "todo title",
-    },
-    {
-      description: "todo title",
-    },
-  ],
-
-  inProgress: [
-    {
-      description: "in progress",
-    },
-    {
-      description: "todo title",
-    },
-    {
-      description: "todo title",
-    },
-  ],
-
-  blocked: [
-    {
-      description: "blocked",
-    },
-  ],
-
-  done: [
-    {
-      description: "done",
-    },
-  ],
+  todo: [{ description: "todo title" }, { description: "todo title" }, { description: "todo title" }],
+  inProgress: [{ description: "in progress" }, { description: "todo title" }, { description: "todo title" }],
+  blocked: [{ description: "blocked" }],
+  done: [{ description: "done" }],
 };
 
-Object.keys(data).forEach((key,index) => data[key].forEach((task) => createTask(task.description, index)))
+Object.keys(data).forEach((key, index) => data[key].forEach((task) => createTask(task.description, index)));
+
+// Create Add Task button
+const addTaskButton = createElement("button", ["add-task-button"], "Add Task");
+addTaskButton.style.position = "fixed";
+addTaskButton.style.top = "10px";
+addTaskButton.style.right = "10px";
+body.appendChild(addTaskButton);
+
+// Add event listener to Add Task button
+addTaskButton.addEventListener("click", () => {
+  const description = prompt("Enter task description:");
+  if (description) {
+    addTask(description);
+  }
+});
